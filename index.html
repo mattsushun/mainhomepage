@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        h1 { margin-bottom: 20px; }
+        #timer { font-size: 48px; margin-bottom: 20px; }
+        button { padding: 10px 20px; margin: 0 5px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h1>Pomodoro Timer</h1>
+    <div id="timer">25:00</div>
+    <div>
+        <button onclick="startTimer()">Start</button>
+        <button onclick="stopTimer()">Stop</button>
+        <button onclick="resetTimer()">Reset</button>
+    </div>
+
+    <script>
+        const workDuration = 25 * 60; // 25 minutes
+        const breakDuration = 5 * 60; // 5 minutes
+        let remaining = workDuration;
+        let timerId = null;
+        let onBreak = false;
+
+        function updateDisplay() {
+            const minutes = String(Math.floor(remaining / 60)).padStart(2, '0');
+            const seconds = String(remaining % 60).padStart(2, '0');
+            document.getElementById('timer').innerText = `${minutes}:${seconds}`;
+        }
+
+        function tick() {
+            if (remaining > 0) {
+                remaining--;
+                updateDisplay();
+            } else {
+                clearInterval(timerId);
+                timerId = null;
+                onBreak = !onBreak;
+                remaining = onBreak ? breakDuration : workDuration;
+                alert(onBreak ? 'Time for a break!' : 'Back to work!');
+                updateDisplay();
+            }
+        }
+
+        function startTimer() {
+            if (!timerId) {
+                timerId = setInterval(tick, 1000);
+            }
+        }
+
+        function stopTimer() {
+            if (timerId) {
+                clearInterval(timerId);
+                timerId = null;
+            }
+        }
+
+        function resetTimer() {
+            stopTimer();
+            onBreak = false;
+            remaining = workDuration;
+            updateDisplay();
+        }
+    </script>
+</body>
+</html>
